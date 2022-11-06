@@ -1,11 +1,11 @@
 # FluentTTS: Text-dependent Fine-grained Style Control for Multi-style TTS
 
 Official PyTorch Implementation of [FluentTTS: Text-dependent Fine-grained Style Control for Multi-style TTS](https://www.isca-speech.org/archive/pdfs/interspeech_2022/kim22j_interspeech.pdf).
-Codes are based on the acknowledgements below.
+Codes are based on the [Acknowledgements](https://github.com/monglechap/fluenttts#acknowledgements) below.
 
 **Abstract**: In this paper, we propose a method to flexibly control the local prosodic variation of a neural text-to-speech (TTS) model. To provide expressiveness for synthesized speech, conventional TTS models utilize utterance-wise global style embeddings that are obtained by compressing frame-level embeddings along the time axis. However, since utterance-wise global features do not contain sufficient information to represent the characteristics of word-level local features, they are not appropriate for direct use on controlling prosody at a fine scale.
 In multi-style TTS models, it is very important to have the capability to control local prosody because it plays a key role in finding the most appropriate text-to-speech pair among many one-to-many mapping candidates.
-To explicitly present local prosodic characteristics to the contextual information of the corresponding input text, we propose a module to predict the fundamental frequency ( $F0$ )of each text by conditioning on the utterance-wise global style embedding.
+To explicitly present local prosodic characteristics to the contextual information of the corresponding input text, we propose a module to predict the fundamental frequency ( $F0$ ) of each text by conditioning on the utterance-wise global style embedding.
 We also estimate multi-style embeddings using a multi-style encoder, which takes as inputs both a global utterance-wise embedding and a local $F0$ embedding.
 Our multi-style embedding enhances the naturalness and expressiveness of synthesized speech and is able to control prosody styles at the word-level or phoneme-level.
 
@@ -26,7 +26,9 @@ Visit our [Demo](https://kchap0118.github.io/fluenttts/) for audio samples.
 ## Preprocessing
 
 1. Prepare text preprocessing
+
    1-1. Our code used for phoneme (Korean) dataset. If you run the code with another languages, please modify files in [text](text/) and [hparams.py](hparams.py) that are related to symbols and text preprocessing.
+
    1-2. Make data filelists like [filelists/example_filelist.txt](filelists/example_filelist.txt).
 
    ```
@@ -35,7 +37,7 @@ Visit our [Demo](https://kchap0118.github.io/fluenttts/) for audio samples.
    ```
 2. Preprocessing
 
-   2-1. Before run [preprocess.py](preprocess.py), modify path (data path) and file_path (filelist that you make in 1-2.) in the line [21](https://github.com/monglechap/fluenttts/blob/main/preprocess.py#L21) , [25](https://github.com/monglechap/fluenttts/blob/main/preprocess.py#L25).
+   2-1. Before run [preprocess.py](preprocess.py), modify path (data path) and file_path (filelist that you make in _1-2_.) in the line [21](https://github.com/monglechap/fluenttts/blob/main/preprocess.py#L21) , [25](https://github.com/monglechap/fluenttts/blob/main/preprocess.py#L25).
 
    2-2. Run
 
@@ -114,8 +116,9 @@ python train.py -o [SAVE DIRECTORY PATH] -m [BASE OR PROP]
 We refered to the following codes for official version of implementation.
 
 1. NVIDIA/tacotron2: [Link](https://github.com/NVIDIA/tacotron2)
-3. Deepest-Project/Transformer-TTS: [Link](https://github.com/Deepest-Project/Transformer-TTS)
-4. NVIDIA/FastPitch: [Link](https://github.com/NVIDIA/DeepLearningExamples/tree/master/PyTorch/SpeechSynthesis/FastPitch)
-5. KevinMIN95/StyleSpeech: [Link](https://github.com/KevinMIN95/StyleSpeech)
-6. Kyubong/g2pK: [Link](https://github.com/Kyubyong/g2pK)
-7. jik876/hifi-gan: [Link](https://github.com/jik876/hifi-gan)
+2. Deepest-Project/Transformer-TTS: [Link](https://github.com/Deepest-Project/Transformer-TTS)
+3. NVIDIA/FastPitch: [Link](https://github.com/NVIDIA/DeepLearningExamples/tree/master/PyTorch/SpeechSynthesis/FastPitch)
+4. KevinMIN95/StyleSpeech: [Link](https://github.com/KevinMIN95/StyleSpeech)
+5. Kyubong/g2pK: [Link](https://github.com/Kyubyong/g2pK)
+6. jik876/hifi-gan: [Link](https://github.com/jik876/hifi-gan)
+7. KinglittleQ/GST-Tacotron: [Link](https://github.com/KinglittleQ/GST-Tacotron)
