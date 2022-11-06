@@ -112,7 +112,7 @@ def main(emb_dir, out_dir, mode):
     if not os.path.isdir(out_dir):
         os.mkdir(out_dir)
 
-    # Data-specific configuration
+    # Data-specific configuration. You should change this codes for your own data structure
     speakers = ['m1', 'm2', 'f1', 'f2']
     emotions = ['neutral', 'anger', 'angry', 'sadness', 'sad', 'happy'] 
 

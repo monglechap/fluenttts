@@ -11,6 +11,8 @@ def process_meta(meta_path):
     with open(meta_path, 'r', encoding='utf-8') as f:
         name, speaker, emotion = [], [], []
         for line in f.readlines():
+            # Data-specific configuration. 
+            # You should change this codes for your own data structure
             path, text, spk = line.strip('\n').split('|')
             filename = path.split('/')[-1][:-4]
             emo = filename[0]
@@ -39,7 +41,7 @@ class TextMelSet(torch.utils.data.Dataset):
         self.audiopaths_and_text = load_filepaths_and_text(audiopaths_and_text)
         self.seq_dir     = os.path.join(hparams.data_path, 'texts')
         self.mel_dir     = os.path.join(hparams.data_path, 'mels')
-        self.norm_f0_dir = os.path.join(hparams.data_path, 'pitch_norm')
+        self.norm_f0_dir = os.path.join(hparams.data_path, 'f0')
         self.prior_dir   = os.path.join(hparams.data_path, 'alignment_priors')
 
         _, self.speaker, self.emotion = process_meta(audiopaths_and_text)
@@ -49,6 +51,8 @@ class TextMelSet(torch.utils.data.Dataset):
 
     def get_mel_text_pair(self, audiopath_and_text):
         # separate filename and text
+        # Data-specific configuration. 
+        # You should change this codes for your own data structure
         wav_path = audiopath_and_text[0]
         name = wav_path.split('/')[-1][:-4]
         emo = name[0]
@@ -71,7 +75,7 @@ class TextMelSet(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.audiopaths_and_text)
 
-# Collate function based on Tacotron2
+# Collate function
 class TextMelCollate():
     def __init__(self):
         return

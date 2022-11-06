@@ -10,6 +10,7 @@ from text import *
 from text.cleaners import basic_cleaners
 from text.symbols import symbols
 from layers import TacotronSTFT
+from utils.data_utils import process_meta, create_id_table
 
 stft = TacotronSTFT()
 
@@ -19,7 +20,7 @@ id_to_symbol = {i: s for i, s in enumerate(symbols)}
 
 ### Prepare data path
 path = 'Data path to save preprocessed files'
-for fname in ('mels', 'texts', 'pitch_norm', 'mean_std', 'alignment_priors'):
+for fname in ('mels', 'texts', 'f0', 'mean_std', 'alignment_priors'):
     os.makedirs(os.path.join(path, fname), exist_ok=True)
 
 file_path  = 'Your filelist path'
@@ -69,25 +70,6 @@ def get_wav(filename):
     wav_32 = wav.astype(np.float32)
     return wav_32
 
-def process_meta(meta_path):
-    with open(meta_path, 'r', encoding='utf-8') as f:
-        name, speaker, emotion = [], [], []
-        for line in f.readlines(): 
-            path, t, spk = line.strip('\n').split('|')
-            filename = path.split('/')[-1][:-4]
-            emo = filename[0] # Ex) 'a'
-
-            name.append(filename)
-            speaker.append(spk)
-            emotion.append(emo)
-
-        return name, speaker, emotion
-            
-def create_id_table(ids):
-    sorted_ids = np.sort(np.unique(ids))
-    d = {sorted_ids[i]: i for i in range(len(sorted_ids))}
-    return d
-
 def compute_mean_f0(fname, current_spk, current_emo, mean_list, std_list):
     spk_id = metadata[fname]['spk']
     emo_id = metadata[fname]['emo']
@@ -133,7 +115,7 @@ def save_file(fname):
     wav_name = fname.split('/')[-1][:-4]
     np.save(os.path.join(os.path.join(path, 'mels'), wav_name), melspec)
     np.save(os.path.join(os.path.join(path, 'texts'), wav_name), phone_seq)
-    np.save(os.path.join(os.path.join(path, 'pitch_norm'), wav_name), norm_f0)
+    np.save(os.path.join(os.path.join(path, 'f0'), wav_name), norm_f0)
     np.save(os.path.join(os.path.join(path, 'alignment_priors'), wav_name), attn_prior) 
     
     return wav_name

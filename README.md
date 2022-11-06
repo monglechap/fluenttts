@@ -27,14 +27,18 @@ Visit our [Demo](https://kchap0118.github.io/fluenttts/) for audio samples.
 
 1. Prepare text preprocessing
 
-   1-1. Our code used for phoneme (Korean) dataset. If you run the code with another languages, please modify files in [text](text/) and [hparams.py](hparams.py) that are related to symbols and text preprocessing.
+   1-1. Our codes are used for internal Korean dataset. If you run the code with another languages, please modify files in [text](text/) and [hparams.py](hparams.py) that are related to symbols and text preprocessing.
 
-   1-2. Make data filelists like [filelists/example_filelist.txt](filelists/example_filelist.txt).
+   1-2. Make data filelists like format of [filelists/example_filelist.txt](filelists/example_filelist.txt). They used for preprocessing and training.
 
    ```
    /your/data/path/angry_f_1234.wav|your_data_text|speaker_type
    /your/data/path/happy_m_5678.wav|your_data_text|speaker_type
+   /your/data/path/sadness_f_111.wav|your_data_test|speaker_type
+   ...
    ```
+
+   1-3. For finding the number of speaker and emotion and defining file names to save, we used format of [filelists/example_filelist.txt](filelists/example_filelist.txt). Thus, please modify the data-specific part (annotated) in [utils/data_utils.py](utils/data_utils.py), [extract_emb.py](extract_emb.py), [mean_i2i.py](mean_i2i.py) and [inference.py](inference.py)
 2. Preprocessing
 
    2-1. Before run [preprocess.py](preprocess.py), modify path (data path) and file_path (filelist that you make in _1-2_.) in the line [21](https://github.com/monglechap/fluenttts/blob/main/preprocess.py#L21) , [25](https://github.com/monglechap/fluenttts/blob/main/preprocess.py#L25).
@@ -44,6 +48,8 @@ Visit our [Demo](https://kchap0118.github.io/fluenttts/) for audio samples.
    ```
    python preprocess.py
    ```
+
+   2-3. Modify path of data, train and validation filelist [hparams.py](hparams.py)
 
 ## Training
 
@@ -87,7 +93,7 @@ python train.py -o [SAVE DIRECTORY PATH] -m [BASE OR PROP]
    ```
    -i: Path of saved emotion embs
    -o: Path for saving mean or i2i embs
-   -m: Set the farthest emotion as only neutral or other emotions
+   -m: Set the farthest emotion as only neutral or other emotions (explained in mean_i2i.py)
    ```
 1. Inference
 
@@ -111,7 +117,7 @@ python train.py -o [SAVE DIRECTORY PATH] -m [BASE OR PROP]
    --slide (optional): Use when you want to apply sliding window attn in Multispeech
    ```
 
-# Acknowledgements
+## Acknowledgements
 
 We refered to the following codes for official version of implementation.
 

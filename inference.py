@@ -138,7 +138,7 @@ def synthesize(args, style_list):
                 audio = audio*32768
                 audio = audio.detach().cpu().numpy().astype('int16')           
                 name = style_path.split('/')[-1][:-4][4:]
-                output = args.out_dir + '/' + str(idx) + '_' + 'prop_' + name + '.wav'
+                output = args.out_dir + '/' + str(idx) + '_' + args.mode + '_' + name + '.wav'
                 write(output, hparams.sampling_rate, audio)
                 print(output) 
 
