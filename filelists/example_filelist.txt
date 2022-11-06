@@ -1,0 +1,2 @@
+/YOUR/DATA/PATH/wavs/anger_m_999.wav|안녕하세요.|m1
+

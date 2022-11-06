@@ -5,7 +5,6 @@ import torch.nn.functional as F
 import numpy as np
 import pdb
 import random
-from sklearn.utils import shuffle
 from utils.utils import *
 
 
