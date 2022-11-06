@@ -3,10 +3,10 @@ from text import symbols
 ### Experiment Parameters
 seed = 118
 n_gpus = 1
-data_path = '/hdd2/chkim/DB/prep_etri_norm_pho'
+data_path = '/YOUR/PREPROCESSED/DATA/PAth'
 
-training_files = 'filelists/train_pho_emo_cleaned.txt'
-validation_files = 'filelists/val_emo.txt'
+training_files = 'filelists/your_train_file.txt'
+validation_files = 'filelists/your_valid_file.txt'
 inference_files = 'inference_textlist.txt'
 text_cleaners = ['basic_cleaners'] # For Korean
 
