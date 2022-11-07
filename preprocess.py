@@ -31,6 +31,7 @@ metadata={}
 
 with open(file_path, 'r') as fid:
     for line in fid.readlines():
+        # Data-specific name definition. You should change this codes for your own data structure
         wav_path, text, spk = line.strip('\n').split("|")
         emo = wav_path.split('/')[-1][0] # Ex) 'a'
         
@@ -105,8 +106,8 @@ def save_file(fname):
     name_mean = 'mean_' + spk_id + '_' + emo_id
     name_std = 'std_' + spk_id + '_' + emo_id
 
-    mean_f0 = np.load(os.path.join(mean_std_dir, name_mean + '.npy'))
-    std_f0  = np.load(os.path.join(mean_std_dir, name_std + '.npy'))
+    mean_f0 = np.load(os.path.join(os.path.join(path, 'mean_std'), name_mean + '.npy'))
+    std_f0  = np.load(os.path.join(os.path.join(path, 'mean_std'), name_std + '.npy'))
 
     norm_f0 = get_norm_f0(f0, mean_f0, std_f0)
 

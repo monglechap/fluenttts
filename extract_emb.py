@@ -21,7 +21,7 @@ def main(args):
     # Load acoustic model
     model = FluentTTS(hparams, mode).cuda()
     optimizer = torch.optim.Adam(model.parameters(), lr=hparams.lr, betas=(0.9, 0.98), eps=1e-09)
-    model, _, _, _,_ = load_checkpoint(args.checkpoint_path, model, optimizer)
+    model, _, _, _, _ = load_checkpoint(args.checkpoint_path, model, optimizer)
     model.eval()
 
     # Extract

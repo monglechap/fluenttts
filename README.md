@@ -39,6 +39,8 @@ Visit our [Demo](https://kchap0118.github.io/fluenttts/) for audio samples.
    ```
 
    1-3. For finding the number of speaker and emotion and defining file names to save, we used format of [filelists/example_filelist.txt](filelists/example_filelist.txt). Thus, please modify the data-specific part (annotated) in [utils/data_utils.py](utils/data_utils.py), [extract_emb.py](extract_emb.py), [mean_i2i.py](mean_i2i.py) and [inference.py](inference.py)
+
+   1-4. Like 1-3., we implemented emotion classification loss based on the format of data. You can use classification loss as _nn.CrossEntropyLoss()_ instead.
 2. Preprocessing
 
    2-1. Before run [preprocess.py](preprocess.py), modify path (data path) and file_path (filelist that you make in _1-2_.) in the line [21](https://github.com/monglechap/fluenttts/blob/main/preprocess.py#L21) , [25](https://github.com/monglechap/fluenttts/blob/main/preprocess.py#L25).
@@ -68,6 +70,7 @@ python train.py -o [SAVE DIRECTORY PATH] -m [BASE OR PROP]
 ## Inference
 
 0. Mean (i2i) style embedding extraction (optional)
+
    0-1. Extract emotion embeddings of dataset
 
    ```
@@ -128,3 +131,15 @@ We refered to the following codes for official version of implementation.
 5. Kyubong/g2pK: [Link](https://github.com/Kyubyong/g2pK)
 6. jik876/hifi-gan: [Link](https://github.com/jik876/hifi-gan)
 7. KinglittleQ/GST-Tacotron: [Link](https://github.com/KinglittleQ/GST-Tacotron)
+
+## Citation
+
+```
+@article{kim2022fluenttts,
+  title={FluentTTS: Text-dependent Fine-grained Style Control for Multi-style TTS$\}$$\}$},
+  author={Kim, Changhwan and Um, Se-yun and Yoon, Hyungchan and Kang, Hong-Goo},
+  journal={Proc. Interspeech 2022},
+  pages={4561--4565},
+  year={2022}
+}
+```

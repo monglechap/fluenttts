@@ -26,11 +26,8 @@ def validate(model, criterion, criterion_emo, criterion_ctc, criterion_bin, crit
             # Forward (w/ multi-style generation)
             if iteration > hparams.local_style_step and model.mode == 'prop':			
                 mel_loss, bce_loss, guide_loss, \
-                ctc_loss, bin_loss, f0_loss, emo_loss, outputs, mel_lengths = model(text_padded, mel_padded, gate_padded,
-                                                                       f0_padded, prior_padded, 
-                                                                       text_lengths, mel_lengths,
-                                                                       criterion, criterion_emo, 
-															           criterion_ctc, criterion_bin, criterion_f0,
+                ctc_loss, bin_loss, f0_loss, emo_loss, outputs, mel_lengths = model(text_padded, mel_padded, gate_padded, f0_padded, prior_padded, text_lengths, mel_lengths,
+                                                                       criterion, criterion_emo, criterion_ctc, criterion_bin, criterion_f0,
                                                                        spk, emo, iteration, valid=True)
             
                 mel_loss, bce_loss, guide_loss, \
@@ -41,11 +38,8 @@ def validate(model, criterion, criterion_emo, criterion_ctc, criterion_bin, crit
             # Forward (w/o multi-style generation)
             else:
                 mel_loss, bce_loss, guide_loss, \
-                ctc_loss, bin_loss, emo_loss, outputs, mel_lengths = model(text_padded, mel_padded, gate_padded,
-                                                              f0_padded, prior_padded,
-                                                              text_lengths, mel_lengths,
-                                                              criterion, criterion_emo, 
-												              criterion_ctc, criterion_bin, criterion_f0,
+                ctc_loss, bin_loss, emo_loss, outputs, mel_lengths = model(text_padded, mel_padded, gate_padded, f0_padded, prior_padded, text_lengths, mel_lengths,
+                                                              criterion, criterion_emo, criterion_ctc, criterion_bin, criterion_f0,
                                                               spk, emo, iteration, valid=True)
             
                 mel_loss, bce_loss, guide_loss, \
@@ -70,7 +64,7 @@ def validate(model, criterion, criterion_emo, criterion_ctc, criterion_bin, crit
     # Plot
     mel_out, enc_alignments, dec_alignments, enc_dec_alignments, gate_out = outputs[0], outputs[1], outputs[2], outputs[3], outputs[4]
     idx = random.randint(0, len(mel_out)-1)
-#    pdb.set_trace()
+
     writer.add_specs(mel_padded.detach().cpu(),
                      mel_out.detach().cpu(),
                      mel_lengths.detach().cpu(),
@@ -93,7 +87,7 @@ def validate(model, criterion, criterion_emo, criterion_ctc, criterion_bin, crit
 
     writer.add_gates(gate_out[idx].detach().cpu(), iteration, 'Validation')
 
-    print(f'\nVal: {iteration} | loss {val_loss:.4f}')
+    print(f'\nValidation: {iteration} | loss {val_loss:.4f}')
 
     model.train()
     
@@ -136,11 +130,8 @@ def main(args):
             # Forward (w/ multi-style generation)
             if iteration > hparams.local_style_step and mode == 'prop':			
                 mel_loss, bce_loss, guide_loss, \
-                ctc_loss, bin_loss, f0_loss, emo_loss = model(text_padded, mel_padded, gate_padded,
-                                                              f0_padded, prior_padded, 
-                                                              text_lengths, mel_lengths,
-                                                              criterion, criterion_emo, 
-															  criterion_ctc, criterion_bin, criterion_f0,
+                ctc_loss, bin_loss, f0_loss, emo_loss = model(text_padded, mel_padded, gate_padded, f0_padded, prior_padded, text_lengths, mel_lengths,
+                                                              criterion, criterion_emo, criterion_ctc, criterion_bin, criterion_f0,
                                                               spk, emo, iteration)
             
                 mel_loss, bce_loss, guide_loss, \
@@ -151,11 +142,8 @@ def main(args):
             # Forward (w/o multi-style generation)
             else:
                 mel_loss, bce_loss, guide_loss, \
-                ctc_loss, bin_loss, emo_loss = model(text_padded, mel_padded, gate_padded,
-                                                     f0_padded, prior_padded,
-                                                     text_lengths, mel_lengths,
-                                                     criterion, criterion_emo, 
-												     criterion_ctc, criterion_bin, criterion_f0,
+                ctc_loss, bin_loss, emo_loss = model(text_padded, mel_padded, gate_padded, f0_padded, prior_padded, text_lengths, mel_lengths,
+                                                     criterion, criterion_emo, criterion_ctc, criterion_bin, criterion_f0,
                                                      spk, emo, iteration)
             
                 mel_loss, bce_loss, guide_loss, \
@@ -178,8 +166,8 @@ def main(args):
             # Tensorboard
             if iteration > hparams.local_style_step + 1 and mode == 'prop':
                 writer.add_losses(loss, mel_loss.item(), bce_loss.item(), guide_loss.item(), 
-                                     ctc_loss.item(), bin_loss.item(), emo_loss.item(),
-                                     iteration, 'Train', f0_loss.item())
+                                  ctc_loss.item(), bin_loss.item(), emo_loss.item(),
+                                  iteration, 'Train', f0_loss.item())
             else:
                 writer.add_losses(loss, mel_loss.item(), bce_loss.item(), guide_loss.item(), 
                                   ctc_loss.item(), bin_loss.item(), emo_loss.item(),

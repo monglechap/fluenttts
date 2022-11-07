@@ -57,6 +57,7 @@ class EmotionLoss(nn.Module):
     def forward(self, logit, emos):
         one_hot_name = torch.zeros((logit.size(0), logit.size(1))).cuda()
 
+        # Data-specific name definition. You should change this codes for your own data structure
         for i in range(logit.size(0)):
             emo = emos[i].lower()
             if emo == 'h':
@@ -67,9 +68,10 @@ class EmotionLoss(nn.Module):
                 one_hot_name[i][2]=1
             elif emo == 'n':
                 one_hot_name[i][3]=1
+                
         loss = torch.sum(logit*one_hot_name, dim=1)
         threshold = 1e-5*torch.ones_like(loss).cuda() # For stability
-        loss = torch.max(torch.sum(logit*one_hot_name, dim=1), threshold)
+        loss = torch.max(loss, threshold)
         loss = torch.mean(-torch.log(loss))
 
         return loss

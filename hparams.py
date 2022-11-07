@@ -3,7 +3,7 @@ from text import symbols
 ### Experiment Parameters
 seed = 118
 n_gpus = 1
-data_path = '/YOUR/PREPROCESSED/DATA/PAth'
+data_path = '/YOUR/PREPROCESSED/DATA/PATH'
 
 training_files = 'filelists/your_train_file.txt'
 validation_files = 'filelists/your_valid_file.txt'
