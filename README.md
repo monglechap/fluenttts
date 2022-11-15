@@ -117,7 +117,6 @@ python train.py -o [SAVE DIRECTORY PATH] -m [BASE OR PROP]
    --ref_dir (optional): Path of reference wavs. Use when you do not apply mean (i2i) algs.
    --spk (optional): Use with --ref_dir
    --emo (optional): Use with --ref_dir
-   --slide (optional): Use when you want to apply sliding window attn in Multispeech
    ```
 
 ## Acknowledgements
