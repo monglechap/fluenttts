@@ -41,7 +41,7 @@ class TextMelSet(torch.utils.data.Dataset):
         self.audiopaths_and_text = load_filepaths_and_text(audiopaths_and_text)
         self.seq_dir     = os.path.join(hparams.data_path, 'texts')
         self.mel_dir     = os.path.join(hparams.data_path, 'mels')
-        self.norm_f0_dir = os.path.join(hparams.data_path, 'f0')
+        self.norm_f0_dir = os.path.join(hparams.data_path, 'pitch_norm')
         self.prior_dir   = os.path.join(hparams.data_path, 'alignment_priors')
 
         _, self.speaker, self.emotion = process_meta(audiopaths_and_text)

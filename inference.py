@@ -124,10 +124,10 @@ def synthesize(args, style_list):
             with torch.no_grad():
                 # Word & Phoneme-level F0 control
                 if args.control == 'pho':
-                    melspec, enc_alignments, dec_alignments, enc_dec_alignments, stop = model.inference(sequence, style, spk_id, f0_mean, f0_std, max_len=1024, mode=mode, slide=args.slide, start=start, end=end, hz=args.hz)
+                    melspec, enc_alignments, dec_alignments, enc_dec_alignments, stop = model.inference(sequence, style, spk_id, f0_mean, f0_std, max_len=512, mode=mode, start=start, end=end, hz=args.hz)
                 # Uttr or not controlling F0
                 else:
-                    melspec, enc_alignments, dec_alignments, enc_dec_alignments, stop = model.inference(sequence, style, spk_id, f0_mean, f0_std, max_len=1024, mode=mode, slide=args.slide, hz=args.hz)
+                    melspec, enc_alignments, dec_alignments, enc_dec_alignments, stop = model.inference(sequence, style, spk_id, f0_mean, f0_std, max_len=512, mode=mode, hz=args.hz)
 
                 T=len(stop)
                 melspec = melspec[:,:,:T]   
@@ -164,8 +164,7 @@ if __name__ == '__main__':
     parser.add_argument('--hz', type=float, default=None, help='value to modify f0')
     parser.add_argument('--ref_dir', type=str, default=None, help='use when using referece wav')
     parser.add_argument('--spk', type=str, default='f2', help='use when using reference wav')
-    parser.add_argument('--emo', type=str, default='a', help='use when using reference wav') 
-    parser.add_argument('--slide', action = 'store_true')
+    parser.add_argument('--emo', type=str, default='a', help='use when using reference wav')
 
     args = parser.parse_args()
 

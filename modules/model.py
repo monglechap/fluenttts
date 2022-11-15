@@ -326,7 +326,7 @@ class FluentTTS(nn.Module):
 
 
     def inference(self, text, emo_embedding, spk_id, f0_mean, f0_std, 
-                  max_len=1024, mode=None, slide=False, start=None, end=None, hz=None):
+                  max_len=512, mode=None, start=None, end=None, hz=None):
         # Input data size
         (B, L), T = text.size(), max_len
         
@@ -404,96 +404,35 @@ class FluentTTS(nn.Module):
         # Autoregressive generation
         stop = [] # Stop token
 
-        if not slide:
-            print('AR generation')
-            for i in range(max_len):
-                # Preparation
-                decoder_input = self.Prenet_D(mel_input.transpose(1,2).contiguous()).transpose(0,1).contiguous()
-                expand_style_dec = style_embedding.expand(decoder_input.size(0), -1, -1)
-                tgt = torch.cat((decoder_input, expand_style_dec), dim=2) + self.alpha2*(self.pe_d[:T].unsqueeze(1))
+        for i in range(max_len):
+            # Preparation
+            decoder_input = self.Prenet_D(mel_input.transpose(1,2).contiguous()).transpose(0,1).contiguous()
+            expand_style_dec = style_embedding.expand(decoder_input.size(0), -1, -1)
+            tgt = torch.cat((decoder_input, expand_style_dec), dim=2) + self.alpha2*(self.pe_d[:T].unsqueeze(1))
 
-                # Decoder
-                for j, layer in enumerate(self.Decoder):
-                    tgt, dec_align, enc_dec_align = layer(tgt,
-                                                        memory,
-                                                        tgt_mask=diag_mask,
-                                                        tgt_key_padding_mask=mel_mask,
-                                                        memory_key_padding_mask=text_mask)
-                
-                    dec_alignments[j, :, i] = dec_align[0, :, i]
-                    enc_dec_alignments[j, :, i] = enc_dec_align[0, :, i]
-                
-                # Outputs
-                mel_out = self.Projection(tgt.transpose(0,1).contiguous())
-                stop.append(torch.sigmoid(self.Stop(mel_out[:,i]))[0,0].item()) 
-                
-                # Store generated frame
-                if i < max_len - 1:
-                    mel_input[0, :, i+1] = mel_out[0, i] # [1,80,1024]
-
-                # Break point
-                if stop[-1]>0.5:
-                    break
-        else:
-            print('AR generation with sliding window attention')
-            # Sliding window attention initialization
-            left_idx   = 0
-            right_idx  = self.hp.sliding_window[1] + 1 # 5
-            win_center = 0
-            update_cnt = 0 # update center when reaching 3
+            # Decoder
+            for j, layer in enumerate(self.Decoder):
+                tgt, dec_align, enc_dec_align = layer(tgt,
+                                                    memory,
+                                                    tgt_mask=diag_mask,
+                                                    tgt_key_padding_mask=mel_mask,
+                                                    memory_key_padding_mask=text_mask)
             
-            # Each mel spectrogram frame
-            for i in range(max_len):
-                # Slice encoder output by sliding window size
-#                print(i, left_idx, right_idx, win_center)
-                current_memory = memory[left_idx:right_idx + 1, :, :] # [6, 1, 256]
-                slide_text_mask = text.new_zeros(1, right_idx-left_idx+1).to(torch.bool) # [1, 6]
+                dec_alignments[j, :, i] = dec_align[0, :, i]
+                enc_dec_alignments[j, :, i] = enc_dec_align[0, :, i]
+            
+            # Outputs
+            mel_out = self.Projection(tgt.transpose(0,1).contiguous())
+            stop.append(torch.sigmoid(self.Stop(mel_out[:,i]))[0,0].item()) 
+            
+            # Store generated frame
+            if i < max_len - 1:
+                mel_input[0, :, i+1] = mel_out[0, i] # [1,80,1024]
 
-                # Preparation
-                decoder_input = self.Prenet_D(mel_input.transpose(1,2).contiguous()).transpose(0,1).contiguous()
-                expand_style_dec = style_embedding.expand(decoder_input.size(0), -1, -1)
-                tgt = torch.cat((decoder_input, expand_style_dec), dim=2) + self.alpha2*(self.pe_d[:T].unsqueeze(1))
-
-                # Decoder
-                for j, layer in enumerate(self.Decoder):
-                    tgt, dec_align, enc_dec_align = layer(tgt,
-                                                        current_memory,
-                                                        tgt_mask=diag_mask,
-                                                        tgt_key_padding_mask=mel_mask,
-                                                        memory_key_padding_mask=slide_text_mask)
-                
-                    dec_alignments[j, :, i] = dec_align[0, :, i]
-                    enc_dec_alignments[j, :, i, left_idx:right_idx + 1] = enc_dec_align[0, :, i]
-                
-                # Outputs
-                mel_out = self.Projection(tgt.transpose(0,1).contiguous())
-                stop.append(torch.sigmoid(self.Stop(mel_out[:,i]))[0,0].item()) 
-                
-                # Store generated frame
-                if i < max_len - 1:
-                    mel_input[0, :, i+1] = mel_out[0, i] # [1,80,1024]
-
-                # Break point
-                if stop[-1]>0.5:
-                    break
-
-                # Sliding window update
-                # Merge enc_dec_alignment of i-th frame for all layer and head
-                tmp_att = torch.sum(enc_dec_alignments, dim=(0,1))[i, left_idx:right_idx+1]
-
-                # Get attention centroid
-                range_tensor = torch.arange(left_idx, right_idx+1).cuda()
-                att_centroid = torch.floor(torch.sum(tmp_att * range_tensor) / (self.hp.n_layers*self.hp.n_heads)).int()
-
-                # Update window center 
-                if att_centroid > win_center:
-                    update_cnt += 1
-                    if update_cnt == 3:
-                        update_cnt = 0
-                        win_center += 1
-                        left_idx   = max(0, win_center + self.hp.sliding_window[0])
-                        right_idx  = min(win_center + self.hp.sliding_window[1], L-2) 
-             
+            # Break point
+            if stop[-1]>0.5:
+                break
+            
         return mel_out.transpose(1,2), enc_alignments, dec_alignments, enc_dec_alignments, stop
 
 

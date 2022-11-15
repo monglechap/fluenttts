@@ -4,7 +4,6 @@ from text import symbols
 seed = 118
 n_gpus = 1
 data_path = '/YOUR/PREPROCESSED/DATA/PATH'
-
 training_files = 'filelists/your_train_file.txt'
 validation_files = 'filelists/your_valid_file.txt'
 inference_files = 'inference_textlist.txt'
